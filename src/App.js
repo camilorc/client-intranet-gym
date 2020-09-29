@@ -1,25 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
+//Import Componentes
+import NavBar from './components/layouts/NavBar';
+import Login from './components/auth/Login';
+import Home from './components/pages/Home';
+import NuevaCuenta from './components/auth/NuevaCuenta';
+import Admin from './components/admin';
+import tokenAuth from './config/tokenAuth';
+
+//Importación de Context
+import AlertState from './context/alerts/AlertState';
+import AuthState from './context/auth/AuthState';
+import RutaPrivada from './components/rutas/RutaPrivada';
+
+
+//Revisamos si tenemos un TOKEN
+const token = localStorage.getItem('token')
+if(token){
+  tokenAuth(token)
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AlertState>
+      <AuthState>
+      <Router>
+        <header>
+          <NavBar />
+        </header>
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route exact path='/login' component={Login} />
+          <Route exact path='/nueva-cuenta' component={NuevaCuenta} />
+          <RutaPrivada exact path='/admin' component={Admin} />
+        </Switch>
+      </Router>
+      </AuthState>
+    </AlertState>
   );
 }
 
